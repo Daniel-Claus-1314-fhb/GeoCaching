@@ -9,6 +9,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Button />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="GeoCacheTools" VerticalAlignment="Top" Style="{StaticResource HeaderTextBlockStyle}"/>
+    
+        <ListView Grid.Row="1" HorizontalAlignment="Center">
+            <ListViewItem>
+                <Button Content="Geo Cache List" Click="Button_Click"/>
+            </ListViewItem>
+        </ListView>
     </Grid>
 </Page>

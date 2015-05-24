@@ -44,5 +44,10 @@ namespace GeoCacheingFinder
             // Wenn Sie den NavigationHelper verwenden, der bei einigen Vorlagen zur Verfügung steht,
             // wird dieses Ereignis für Sie behandelt.
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Geo.GeoCacheListPage));
+        }
     }
 }
