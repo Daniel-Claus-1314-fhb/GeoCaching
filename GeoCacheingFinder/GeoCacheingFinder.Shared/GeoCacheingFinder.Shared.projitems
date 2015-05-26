@@ -16,9 +16,11 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Domain\GeoCacheModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\SearchOptionModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\ApiRequestService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de-DE\AuthKey.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de-DE\ApiCredentials.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de-DE\Message.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de-DE\URIsOpencache.resw" />
   </ItemGroup>

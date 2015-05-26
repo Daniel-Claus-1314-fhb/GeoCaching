@@ -22,7 +22,7 @@
 
         <!-- Grid Row 1 -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0">
-            <RepeatButton Content="Suchen" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,12,0" Click="RepeatButton_Click"/>
+            <RepeatButton Content="Suchen" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,12,0" Click="SearchButton_Click"/>
             <ToggleButton Content="Suchoptionen" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </StackPanel>
 

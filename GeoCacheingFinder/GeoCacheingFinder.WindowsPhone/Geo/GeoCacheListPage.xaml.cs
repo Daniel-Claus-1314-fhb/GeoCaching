@@ -1,4 +1,5 @@
 ﻿using GeoCacheingFinder.Domain;
+using GeoCacheingFinder.Service;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Phone.UI.Input;
@@ -29,9 +31,13 @@ namespace GeoCacheingFinder.Geo
     /// </summary>
     public sealed partial class GeoCacheListPage : Page
     {
+        ApiRequestService _apiRequestService;
+
+
         public GeoCacheListPage()
         {
             this.InitializeComponent();
+            this._apiRequestService = new ApiRequestService();
         }
 
         /// <summary>
@@ -42,26 +48,12 @@ namespace GeoCacheingFinder.Geo
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-            SetTestData();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
             base.OnNavigatedFrom(e);
-        }
-
-        private void SetTestData()
-        {
-            List<GeoCacheModel> gcModels = new List<GeoCacheModel>();
-            GeoCacheModel gcModel1 = new GeoCacheModel("Erster Cache", "RE33GH", "53.26|13.1154", "Traditional", "Available");
-            GeoCacheModel gcModel2 = new GeoCacheModel("Zweiter Cache", "GHASER", "51.566|12.1564", "Traditional", "NotAvailable");
-            GeoCacheModel gcModel3 = new GeoCacheModel("Dritter Cache", "UOP99F", "51.566|12.1564", "Quest", "Available");
-            gcModels.Add(gcModel1);
-            gcModels.Add(gcModel2);
-            gcModels.Add(gcModel3);
-
-            GeoCacheList.DataContext = gcModels;
         }
 
         private async void TestRequest()
@@ -97,9 +89,10 @@ namespace GeoCacheingFinder.Geo
             }
         }
 
-        private void RepeatButton_Click(object sender, RoutedEventArgs e)
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            TestRequest();
+                List<GeoCacheModel> gcModels = await _apiRequestService.searchNearestCachesAsync();
+                GeoCacheList.DataContext = gcModels;
         }
     }
 }
