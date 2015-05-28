@@ -15,8 +15,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\GeoCacheCodesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Domain\GeoCacheModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Domain\SearchOptionModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\ViewModel\GeoCacheListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\ViewModel\SearchOptionViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\ApiRequestService.cs" />
   </ItemGroup>
   <ItemGroup>

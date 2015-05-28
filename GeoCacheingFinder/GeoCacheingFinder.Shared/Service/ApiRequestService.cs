@@ -1,4 +1,5 @@
 ﻿using GeoCacheingFinder.Domain;
+using GeoCacheingFinder.Domain.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,63 +27,74 @@ namespace GeoCacheingFinder.Service
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<List<GeoCacheModel>> searchNearestCachesAsync()
+        public async Task<List<GeoCacheModel>> searchNearestCachesAsync(SearchOptionViewModel searchOptionViewModel)
         {
             // get request the codes of the geocaches which are in a certain radius to the given geo position.
-            GeoCacheCodes gcCodes = await searchNearestCacheCodesAsync();
+            GeoCacheCodesModel gcCodes = await searchNearestCacheCodesAsync(searchOptionViewModel);
 
             // get request the details for the received geocache codes
             List<GeoCacheModel> gcModels = await searchGeoCacheDetailsAsync(gcCodes);
             return gcModels;
         }
 
-        private async Task<GeoCacheCodes> searchNearestCacheCodesAsync()
+        private async Task<GeoCacheCodesModel> searchNearestCacheCodesAsync(SearchOptionViewModel searchOptionViewModel)
         {
-            GeoCacheCodes gcCodes = new GeoCacheCodes();
+            GeoCacheCodesModel gcCodes = new GeoCacheCodesModel();
+            String latitude = searchOptionViewModel.Latitude.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
+            String longitude = searchOptionViewModel.Longitude.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
+            int radius = searchOptionViewModel.Radius;
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri(_uriResource.GetString("BaseUri"));
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                prepareHttpClient(client);
 
                 String preparedRequestPath = _uriResource.GetString("NearestGeoCachesUri") + "?" 
                     + _apiCredentials.GetString("ConsumerKey")
-                    + "&center=52.3871|13.0993&radius=10";
+                    + "&center=" + latitude.ToString() + "|" + longitude + "&radius=" + radius;
 
                 // HTTP GET
                 HttpResponseMessage response = await client.GetAsync(preparedRequestPath);
                 if (response.IsSuccessStatusCode)
                 {
                     String responseString = await response.Content.ReadAsStringAsync();
-                    gcCodes = new GeoCacheCodes(responseString);
+                    gcCodes = new GeoCacheCodesModel(responseString);
                 }
             }
 
             return gcCodes;
         }
 
-        private async Task<List<GeoCacheModel>> searchGeoCacheDetailsAsync(GeoCacheCodes geoCacheCodes)
+        private async Task<List<GeoCacheModel>> searchGeoCacheDetailsAsync(GeoCacheCodesModel geoCacheCodes)
         {
             List<GeoCacheModel> gcModels = new List<GeoCacheModel>();
-            String preparedCodes = geoCacheCodes.ToString();
-
-            using (HttpClient client = new HttpClient())
+            if (geoCacheCodes.Codes.Count > 0)
             {
-                client.BaseAddress = new Uri(_uriResource.GetString("BaseUri"));
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                // HTTP GET
-                HttpResponseMessage response = await client.GetAsync("caches/geocaches?consumer_key=&cache_codes=" + preparedCodes);
-                if (response.IsSuccessStatusCode)
+                using (HttpClient client = new HttpClient())
                 {
-                    String responseString = await response.Content.ReadAsStringAsync();
-                    gcModels = mapTo(responseString);
+                    prepareHttpClient(client);
+
+                    String preparedRequestUri = _uriResource.GetString("GeoCachesDetailsUri")
+                        + "?" + _apiCredentials.GetString("ConsumerKey")
+                        + "&cache_codes=" + geoCacheCodes.ToString();
+
+                    // HTTP GET
+                    HttpResponseMessage response = await client.GetAsync(preparedRequestUri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        String responseString = await response.Content.ReadAsStringAsync();
+                        gcModels = mapTo(responseString);
+                    }
                 }
             }
 
             return gcModels;
+        }
+
+        private void prepareHttpClient(HttpClient client) 
+        {
+            client.BaseAddress = new Uri(_uriResource.GetString("BaseUri"));
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         private List<GeoCacheModel> mapTo(String jsonString)
@@ -92,18 +104,7 @@ namespace GeoCacheingFinder.Service
             JsonObject jsonObject = JsonObject.Parse(jsonString);
 
             foreach (IJsonValue jsonValue in jsonObject.Values) {
-                // {"code":"OCC95C","name":"Neuendorfer Triftwege","location":"52.391367|13.095367","type":"Traditional","status":"Available"}
-
-                JsonObject jsonObject2 = jsonValue.GetObject();
-
-                GeoCacheModel gcModel = new GeoCacheModel();
-                gcModel.Code = jsonObject2.GetNamedString("code", "");
-                gcModel.Name = jsonObject2.GetNamedString("name", "");
-                gcModel.Location = jsonObject2.GetNamedString("location", "");
-                gcModel.Type = jsonObject2.GetNamedString("type", "");
-                gcModel.Status = jsonObject2.GetNamedString("status", "");
-
-                geoCacheModels.Add(gcModel);
+                geoCacheModels.Add(new GeoCacheModel(jsonValue));
             }
 
             return geoCacheModels;

@@ -5,7 +5,7 @@ using Windows.Data.Json;
 
 namespace GeoCacheingFinder.Domain
 {
-    class GeoCacheModel
+    public class GeoCacheModel
     {
         public GeoCacheModel() { }
         public GeoCacheModel(String Name, String Code, String Location, String Type, String Status)
@@ -15,6 +15,38 @@ namespace GeoCacheingFinder.Domain
             this.Location = Location;
             this.Type = Type;
             this.Status = Status;
+        }
+
+        public GeoCacheModel(String jsonString)
+            : this(JsonObject.Parse(jsonString))
+        { }
+
+        public GeoCacheModel(IJsonValue jsonValue)
+            : this(jsonValue.GetObject())
+        { }
+
+        public GeoCacheModel(JsonObject jsonObject)
+        {
+            this.Code = jsonObject.GetNamedString("code", "");
+            this.Name = jsonObject.GetNamedString("name", "");
+            this.Location = jsonObject.GetNamedString("location", "");
+            this.Type = jsonObject.GetNamedString("type", "");
+            this.Status = jsonObject.GetNamedString("status", "");
+
+            // extract latitude and longitude double values from location string 
+            String[] splitValue = jsonObject.GetNamedString("location", "").Split(new Char[] { '|' });
+            String lat = splitValue.GetValue(new int[] { 0 }).ToString();
+            String lon = splitValue.GetValue(new int[] { 1 }).ToString();
+            double doubleResult = 0d;
+            if (Double.TryParse(lat, out doubleResult))
+            {
+                this.Latitude = doubleResult;
+            }
+            doubleResult = 0d;
+            if (Double.TryParse(lon, out doubleResult))
+            {
+                this.Longitude = doubleResult;
+            }
         }
 
         /// <summary>
@@ -35,6 +67,16 @@ namespace GeoCacheingFinder.Domain
         public string Location { get; set; }
 
         /// <summary>
+        /// Latitude of the given geolocation.
+        /// </summary>
+        public double Latitude { get; set; }
+
+        /// <summary>
+        /// Longitude of the given geolocation.
+        /// </summary>
+        public double Longitude { get; set; }
+
+        /// <summary>
         /// distance from the current location to the cache.
         /// </summary>
         public int Distance { get; set; }
@@ -53,53 +95,6 @@ namespace GeoCacheingFinder.Domain
         public override string ToString()
         {
             return "code: " + Code + ", name: " + Name + ", loaction: " + Location + ", distance: " + Distance + ", type: " + Type + ", status: " + Status;
-        }
-    }
-
-    class GeoCacheCodes 
-    {
-        private const string results = "results";
-        private const string seperator = "|";
-
-        public GeoCacheCodes() { }
-
-        public GeoCacheCodes(List<String> geoCacheCodes)
-        {
-            this.Codes = geoCacheCodes;
-        }
-
-        public GeoCacheCodes(String jsonString) : this()
-        {
-            Codes = new List<String>();
-            JsonObject jsonObject = JsonObject.Parse(jsonString);
-
-            foreach (IJsonValue jsonValue in jsonObject.GetNamedArray(results, new JsonArray()))
-            {
-                if (jsonValue.ValueType == JsonValueType.String)
-                {
-                    Codes.Add(jsonValue.GetString());
-                }
-            }
-        }
-
-        public List<String> Codes;
-
-        public override string ToString()
-        {
-            String strValue = "";
-
-            foreach (String Code in this.Codes)
-            {
-                strValue = strValue + Code + seperator;
-            }
-
-            if (strValue.Length > 0)
-            {
-                int strLength = strValue.Length;
-                strValue = strValue.Substring(0, strLength - 1);
-            }
-
-            return strValue;
         }
     }
 }

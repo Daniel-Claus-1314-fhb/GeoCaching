@@ -1,4 +1,5 @@
 ﻿using GeoCacheingFinder.Domain;
+using GeoCacheingFinder.Domain.ViewModel;
 using GeoCacheingFinder.Service;
 using System;
 using System.Collections.Generic;
@@ -31,15 +32,16 @@ namespace GeoCacheingFinder.Geo
     /// </summary>
     public sealed partial class GeoCacheListPage : Page
     {
-        ApiRequestService _apiRequestService;
-
-
+        private ApiRequestService _apiRequestService;
+        private SearchOptionViewModel _searchOptionViewModel;
+        
         public GeoCacheListPage()
         {
             this.InitializeComponent();
             this._apiRequestService = new ApiRequestService();
+            _searchOptionViewModel = new SearchOptionViewModel();
         }
-
+        
         /// <summary>
         /// Wird aufgerufen, wenn diese Seite in einem Frame angezeigt werden soll.
         /// </summary>
@@ -48,6 +50,8 @@ namespace GeoCacheingFinder.Geo
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+
+            SearchOption.DataContext = _searchOptionViewModel;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -55,24 +59,7 @@ namespace GeoCacheingFinder.Geo
             HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
             base.OnNavigatedFrom(e);
         }
-
-        private async void TestRequest()
-        {
-            HttpClient client = new HttpClient();
-
-            client.BaseAddress = new Uri("http://www.opencaching.de/okapi/services/");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            // HTTP GET
-            HttpResponseMessage response = await client.GetAsync("caches/search/nearest?consumer_key=LyLvkDtKsucTA4cUzhFv&center=52.3871%7C13.0993&radius=10");
-            if (response.IsSuccessStatusCode)
-            {
-                String gcCodes = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(gcCodes);
-            }
-        }
-
+        
         private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
         {
             Frame frame = Window.Current.Content as Frame;
@@ -91,8 +78,18 @@ namespace GeoCacheingFinder.Geo
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-                List<GeoCacheModel> gcModels = await _apiRequestService.searchNearestCachesAsync();
-                GeoCacheList.DataContext = gcModels;
+            List<GeoCacheModel> gcModels = await _apiRequestService.searchNearestCachesAsync(_searchOptionViewModel);
+            GeoCacheList.DataContext = gcModels;
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            SearchOption.Visibility = Visibility.Visible;
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SearchOption.Visibility = Visibility.Collapsed;
         }
     }
 }

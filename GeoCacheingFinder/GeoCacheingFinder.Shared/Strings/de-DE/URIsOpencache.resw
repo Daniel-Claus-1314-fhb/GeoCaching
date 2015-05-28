@@ -120,6 +120,9 @@
   <data name="BaseUri" xml:space="preserve">
     <value>http://www.opencaching.de/okapi/services/</value>
   </data>
+  <data name="GeoCachesDetailsUri" xml:space="preserve">
+    <value>caches/geocaches</value>
+  </data>
   <data name="NearestGeoCachesUri" xml:space="preserve">
     <value>caches/search/nearest</value>
   </data>
