@@ -9,7 +9,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Phone.UI.Input;
@@ -32,6 +34,9 @@ namespace GeoCacheingFinder.Geo
     /// </summary>
     public sealed partial class GeoCacheListPage : Page
     {
+        private Geolocator _geolocator = null;
+        private CancellationTokenSource _cts = null;
+
         private ApiRequestService _apiRequestService;
         private SearchOptionViewModel _searchOptionViewModel;
         
@@ -39,7 +44,16 @@ namespace GeoCacheingFinder.Geo
         {
             this.InitializeComponent();
             this._apiRequestService = new ApiRequestService();
-            _searchOptionViewModel = new SearchOptionViewModel();
+            this._searchOptionViewModel = new SearchOptionViewModel();
+
+
+            this._geolocator = new Geolocator();
+
+#if WINDOWS_PHONE_APP
+            // Desired Accuracy needs to be set
+            // before polling for desired accuracy.
+            _geolocator.DesiredAccuracyInMeters = 10;
+#endif
         }
         
         /// <summary>
@@ -78,8 +92,14 @@ namespace GeoCacheingFinder.Geo
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+            SearchButton.IsEnabled = false;
+            ProgressBar.Visibility = Visibility.Visible;
+
             List<GeoCacheModel> gcModels = await _apiRequestService.searchNearestCachesAsync(_searchOptionViewModel);
             GeoCacheList.DataContext = gcModels;
+
+            SearchButton.IsEnabled = true;
+            ProgressBar.Visibility = Visibility.Collapsed;
         }
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
@@ -90,6 +110,51 @@ namespace GeoCacheingFinder.Geo
         private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
             SearchOption.Visibility = Visibility.Collapsed;
+        }
+        
+        private async void GPSButton_Checked(object sender, RoutedEventArgs e)
+        {
+            GPSButton.Content = "Cancel";
+            ProgressBar.Visibility = Visibility.Visible;
+            try
+            {
+                // Get cancellation token
+                _cts = new CancellationTokenSource();
+                CancellationToken token = _cts.Token;
+
+                // Carry out the operation
+                Geoposition pos = await _geolocator.GetGeopositionAsync().AsTask(token);
+
+                this._searchOptionViewModel.Latitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Latitude);
+                this._searchOptionViewModel.Longitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Longitude);
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+
+            }
+            catch (TaskCanceledException)
+            {
+
+            }
+            finally
+            {
+                _cts = null;
+            }
+
+            GPSButton.Content = "GPS";
+            GPSButton.IsChecked = false;
+            ProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void GPSButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts = null;
+            }
+            GPSButton.Content = "GPS";
+            ProgressBar.Visibility = Visibility.Collapsed;
         }
     }
 }

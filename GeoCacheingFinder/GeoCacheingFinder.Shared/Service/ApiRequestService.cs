@@ -40,8 +40,8 @@ namespace GeoCacheingFinder.Service
         private async Task<GeoCacheCodesModel> searchNearestCacheCodesAsync(SearchOptionViewModel searchOptionViewModel)
         {
             GeoCacheCodesModel gcCodes = new GeoCacheCodesModel();
-            String latitude = searchOptionViewModel.Latitude.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
-            String longitude = searchOptionViewModel.Longitude.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
+            String latitude = searchOptionViewModel.Latitude.Replace(",",".").Trim();
+            String longitude = searchOptionViewModel.Longitude.Replace(",", ".").Trim();
             int radius = searchOptionViewModel.Radius;
 
             using (HttpClient client = new HttpClient())
@@ -67,7 +67,7 @@ namespace GeoCacheingFinder.Service
         private async Task<List<GeoCacheModel>> searchGeoCacheDetailsAsync(GeoCacheCodesModel geoCacheCodes)
         {
             List<GeoCacheModel> gcModels = new List<GeoCacheModel>();
-            if (geoCacheCodes.Codes.Count > 0)
+            if (geoCacheCodes.Codes != null && geoCacheCodes.Codes.Count > 0)
             {
                 using (HttpClient client = new HttpClient())
                 {

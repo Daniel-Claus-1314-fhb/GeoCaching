@@ -12,11 +12,11 @@ namespace GeoCacheingFinder.Domain.ViewModel
         public SearchOptionViewModel() 
         {
             this.Radius = 10;
-            this.Latitude = 52.3871d;
-            this.Longitude = 13.0993d;
+            this.Latitude = "52.3871";
+            this.Longitude = "13.0993";
         }
 
-        public SearchOptionViewModel(int radius, double longitude, double latitude, bool usesGPS) 
+        public SearchOptionViewModel(int radius, string longitude, string latitude, bool usesGPS) 
         {
             this.Radius = radius;
             this.Latitude = latitude;
@@ -37,8 +37,8 @@ namespace GeoCacheingFinder.Domain.ViewModel
         /// <summary>
         /// Latitude of the given geolocation.
         /// </summary>
-        private double _latitude;
-        public double Latitude
+        private string _latitude;
+        public string Latitude
         {
             get { return _latitude; }
             set { this.SetProperty(ref this._latitude, value); }
@@ -46,8 +46,8 @@ namespace GeoCacheingFinder.Domain.ViewModel
         /// <summary>
         /// Longitude of the given geolocation.
         /// </summary>
-        private double _longitude;
-        public double Longitude
+        private string _longitude;
+        public string Longitude
         {
             get { return _longitude; }
             set { this.SetProperty(ref this._longitude, value); }
