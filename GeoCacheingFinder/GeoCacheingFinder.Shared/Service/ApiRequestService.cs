@@ -33,7 +33,7 @@ namespace GeoCacheingFinder.Service
             GeoCacheCodesModel gcCodes = await searchNearestCacheCodesAsync(searchOptionViewModel);
 
             // get request the details for the received geocache codes
-            List<GeoCacheModel> gcModels = await searchGeoCacheDetailsAsync(gcCodes);
+            List<GeoCacheModel> gcModels = await searchGeoCacheDetailsAsync(gcCodes, searchOptionViewModel);
             return gcModels;
         }
 
@@ -50,7 +50,7 @@ namespace GeoCacheingFinder.Service
 
                 String preparedRequestPath = _uriResource.GetString("NearestGeoCachesUri") + "?" 
                     + _apiCredentials.GetString("ConsumerKey")
-                    + "&center=" + latitude.ToString() + "|" + longitude + "&radius=" + radius;
+                    + "&center=" + latitude + "|" + longitude + "&radius=" + radius;
 
                 // HTTP GET
                 HttpResponseMessage response = await client.GetAsync(preparedRequestPath);
@@ -64,9 +64,13 @@ namespace GeoCacheingFinder.Service
             return gcCodes;
         }
 
-        private async Task<List<GeoCacheModel>> searchGeoCacheDetailsAsync(GeoCacheCodesModel geoCacheCodes)
+        private async Task<List<GeoCacheModel>> searchGeoCacheDetailsAsync(GeoCacheCodesModel geoCacheCodes, SearchOptionViewModel searchOptionViewModel)
         {
             List<GeoCacheModel> gcModels = new List<GeoCacheModel>();
+            String latitude = searchOptionViewModel.Latitude.Replace(",", ".").Trim();
+            String longitude = searchOptionViewModel.Longitude.Replace(",", ".").Trim();
+            String fields = "code|name|location|type|status|distance";
+
             if (geoCacheCodes.Codes != null && geoCacheCodes.Codes.Count > 0)
             {
                 using (HttpClient client = new HttpClient())
@@ -75,7 +79,9 @@ namespace GeoCacheingFinder.Service
 
                     String preparedRequestUri = _uriResource.GetString("GeoCachesDetailsUri")
                         + "?" + _apiCredentials.GetString("ConsumerKey")
-                        + "&cache_codes=" + geoCacheCodes.ToString();
+                        + "&cache_codes=" + geoCacheCodes.ToString()
+                        + "&my_location=" + latitude + "|" + longitude
+                        + "&fields=" + fields;
 
                     // HTTP GET
                     HttpResponseMessage response = await client.GetAsync(preparedRequestUri);

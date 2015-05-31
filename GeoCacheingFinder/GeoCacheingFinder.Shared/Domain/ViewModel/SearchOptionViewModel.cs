@@ -11,17 +11,18 @@ namespace GeoCacheingFinder.Domain.ViewModel
         // Constructor
         public SearchOptionViewModel() 
         {
-            this.Radius = 10;
+            this.Radius = 25;
+            this.GPSAccuracy = 50;
             this.Latitude = "52.3871";
             this.Longitude = "13.0993";
         }
 
-        public SearchOptionViewModel(int radius, string longitude, string latitude, bool usesGPS) 
+        public SearchOptionViewModel(int radius, string longitude, string latitude, int gpsAccuracy) 
         {
             this.Radius = radius;
             this.Latitude = latitude;
             this.Longitude = longitude;
-            this.UsesGPS = usesGPS;
+            this.GPSAccuracy = gpsAccuracy;
         }
 
         // Properties
@@ -33,6 +34,15 @@ namespace GeoCacheingFinder.Domain.ViewModel
         {
             get { return _radius; }
             set { this.SetProperty(ref this._radius, value); }
+        }
+        /// <summary>
+        /// Accuray of the detected geo location.
+        /// </summary>
+        private int _gpsAccuracy;
+        public int GPSAccuracy 
+        {
+            get { return _gpsAccuracy; }
+            set { this.SetProperty(ref this._gpsAccuracy, value); }
         }
         /// <summary>
         /// Latitude of the given geolocation.
@@ -52,16 +62,6 @@ namespace GeoCacheingFinder.Domain.ViewModel
             get { return _longitude; }
             set { this.SetProperty(ref this._longitude, value); }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        private bool _usesGPS;
-        public bool UsesGPS
-        {
-            get { return _usesGPS; }
-            set { this.SetProperty(ref this._usesGPS, value); }
-        }
-
 
         // property changed logic by jump start
         public event PropertyChangedEventHandler PropertyChanged;

@@ -12,7 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
             <RowDefinition MinHeight="60" Height="auto" MaxHeight="120"/>
-            <RowDefinition MinHeight="0" Height="auto" MaxHeight="120"/>
+            <RowDefinition MinHeight="0" Height="auto" MaxHeight="180"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -28,13 +28,36 @@
         </StackPanel>
 
         <!-- Grid Row 2 -->
-        <Grid Grid.Row="2" x:Name="SearchOption" DataContext="{Binding Path=_searchOptionViewModel, Mode=TwoWay}" Visibility="Visible">
+        <Grid Grid.Row="2" x:Name="SearchOption" DataContext="{Binding Path=_searchOptionViewModel, Mode=TwoWay}" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Radius:" Style="{StaticResource BaseTextBlockStyle}"/>
+                    <TextBlock Text="{Binding Radius}" Style="{StaticResource BaseTextBlockStyle}" Margin="4,0" />
+                    <TextBlock Text="km" Style="{StaticResource BaseTextBlockStyle}"/>
+                </StackPanel>
+                
+                <Slider x:Name="RadiusSlider" Orientation="Horizontal" Maximum="50" StepFrequency="5" Value="{Binding Radius, Mode=TwoWay}" 
+                        TickFrequency="5" Minimum="5" />
+            </StackPanel>
 
-            <Grid Grid.Row="0">
+            <StackPanel Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="GPS Genauigkeit:" Style="{StaticResource BaseTextBlockStyle}"/>
+                    <TextBlock Text="{Binding GPSAccuracy}" Style="{StaticResource BaseTextBlockStyle}" Margin="4,0" />
+                    <TextBlock Text="m" Style="{StaticResource BaseTextBlockStyle}"/>
+                </StackPanel>
+
+                <Slider x:Name="GPSAccuracy" Orientation="Horizontal" Maximum="100" StepFrequency="10" Value="{Binding GPSAccuracy, Mode=TwoWay}" 
+                        TickFrequency="10" Minimum="10" />
+            </StackPanel>
+
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -53,31 +76,43 @@
 
                 <ToggleButton x:Name="GPSButton" Content="GPS" Grid.Column="2" HorizontalAlignment="Right" 
                         VerticalAlignment="Bottom" Checked="GPSButton_Checked" Unchecked="GPSButton_Unchecked" />
-               </Grid>
-
-            <StackPanel Grid.Row="1">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Radius:" Style="{StaticResource BaseTextBlockStyle}"/>
-                    <TextBlock Text="{Binding Radius}" Style="{StaticResource BaseTextBlockStyle}" Margin="4,0" />
-                    <TextBlock Text="km" Style="{StaticResource BaseTextBlockStyle}"/>
-                </StackPanel>
-                <Slider x:Name="RadiusSlider" Orientation="Horizontal" Maximum="50" StepFrequency="5" Value="{Binding Radius, Mode=TwoWay}" 
-                        TickFrequency="5" Minimum="5" />
-            </StackPanel>
+            </Grid>
         </Grid>
 
         <!-- Grid Row 3 -->
-        <ListBox Grid.Row="3" x:Name="GeoCacheList" HorizontalAlignment="Left" ItemsSource="{Binding}" Background="Transparent">
+        <ListBox Grid.Row="3" x:Name="GeoCacheList" ItemsSource="{Binding}" Background="Transparent">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Name, FallbackValue='keine Name'}" Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"/>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Type, FallbackValue='keine Type'}" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,8,0"/>
-                            <TextBlock Text="{Binding Status, FallbackValue='keine Status'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='keine Name'}" Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="Type:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="{Binding Type, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
                         </StackPanel>
-                        <TextBlock Text="{Binding Path=Location, FallbackValue='keine Location'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
-                    </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                            <TextBlock Text="Status:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="{Binding Status, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="Distanz:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="{Binding Distance, FallbackValue='keine'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                            <TextBlock Text="m" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=Location, FallbackValue='keine Location'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

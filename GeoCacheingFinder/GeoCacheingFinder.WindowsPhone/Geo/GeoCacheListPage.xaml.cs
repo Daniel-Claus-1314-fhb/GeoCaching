@@ -45,14 +45,12 @@ namespace GeoCacheingFinder.Geo
             this.InitializeComponent();
             this._apiRequestService = new ApiRequestService();
             this._searchOptionViewModel = new SearchOptionViewModel();
-
-
             this._geolocator = new Geolocator();
 
 #if WINDOWS_PHONE_APP
             // Desired Accuracy needs to be set
             // before polling for desired accuracy.
-            _geolocator.DesiredAccuracyInMeters = 10;
+            _geolocator.DesiredAccuracyInMeters = (uint) this._searchOptionViewModel.GPSAccuracy;
 #endif
         }
         
@@ -96,6 +94,7 @@ namespace GeoCacheingFinder.Geo
             ProgressBar.Visibility = Visibility.Visible;
 
             List<GeoCacheModel> gcModels = await _apiRequestService.searchNearestCachesAsync(_searchOptionViewModel);
+            Debug.WriteLine(gcModels.ToString());
             GeoCacheList.DataContext = gcModels;
 
             SearchButton.IsEnabled = true;
@@ -123,6 +122,7 @@ namespace GeoCacheingFinder.Geo
                 CancellationToken token = _cts.Token;
 
                 // Carry out the operation
+                _geolocator.DesiredAccuracyInMeters = (uint) this._searchOptionViewModel.GPSAccuracy;
                 Geoposition pos = await _geolocator.GetGeopositionAsync().AsTask(token);
 
                 this._searchOptionViewModel.Latitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Latitude);
