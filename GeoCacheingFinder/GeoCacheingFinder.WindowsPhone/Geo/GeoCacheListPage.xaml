@@ -97,12 +97,12 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='keine Name'}" Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"/>
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Text="Type:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
-                            <TextBlock Text="{Binding Type, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                            <TextBlock Text="Code:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="{Binding Code, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                            <TextBlock Text="Status:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
-                            <TextBlock Text="{Binding Status, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                            <TextBlock Text="Type:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="{Binding Type, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
                         </StackPanel>
 
                         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">

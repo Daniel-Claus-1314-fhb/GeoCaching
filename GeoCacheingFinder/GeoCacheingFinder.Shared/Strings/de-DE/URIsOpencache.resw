@@ -120,10 +120,34 @@
   <data name="BaseUri" xml:space="preserve">
     <value>http://www.opencaching.de/okapi/services/</value>
   </data>
+  <data name="CacheCodeParam" xml:space="preserve">
+    <value>cache_code=</value>
+  </data>
+  <data name="CacheCodesParam" xml:space="preserve">
+    <value>cache_codes=</value>
+  </data>
+  <data name="CenterParam" xml:space="preserve">
+    <value>center=</value>
+  </data>
+  <data name="FullFields" xml:space="preserve">
+    <value>fields=code|name|location|type|status|distance|bearing2|difficulty|terrain|rating|size2|short_description|description|url</value>
+  </data>
+  <data name="GeoCacheDetailsUri" xml:space="preserve">
+    <value>caches/geocache</value>
+  </data>
   <data name="GeoCachesDetailsUri" xml:space="preserve">
     <value>caches/geocaches</value>
   </data>
+  <data name="MyLocationParam" xml:space="preserve">
+    <value>my_location=</value>
+  </data>
   <data name="NearestGeoCachesUri" xml:space="preserve">
     <value>caches/search/nearest</value>
+  </data>
+  <data name="RadiusParam" xml:space="preserve">
+    <value>radius=</value>
+  </data>
+  <data name="SimpleFields" xml:space="preserve">
+    <value>fields=code|name|location|type|status|distance</value>
   </data>
 </root>

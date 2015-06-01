@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\GeoCacheDetailModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Domain\GeoCacheCodesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Domain\GeoCacheModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Domain\ViewModel\GeoCacheListViewModel.cs" />

@@ -26,74 +26,140 @@ namespace GeoCacheingFinder.Service
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="code"></param>
+        /// <param name="searchOptionViewModel"></param>
+        /// <returns></returns>
+        public async Task<GeoCacheModel> findCacheByCodeAsync(String code, SearchOptionViewModel searchOptionViewModel)
+        {
+            return await findGeoCacheDetailsAsync(code, searchOptionViewModel);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchOptionViewModel"></param>
         /// <returns></returns>
         public async Task<List<GeoCacheModel>> searchNearestCachesAsync(SearchOptionViewModel searchOptionViewModel)
         {
             // get request the codes of the geocaches which are in a certain radius to the given geo position.
-            GeoCacheCodesModel gcCodes = await searchNearestCacheCodesAsync(searchOptionViewModel);
+            List<String> geoCacheCodes = await searchNearestCacheCodesAsync(searchOptionViewModel);
 
             // get request the details for the received geocache codes
-            List<GeoCacheModel> gcModels = await searchGeoCacheDetailsAsync(gcCodes, searchOptionViewModel);
+            List<GeoCacheModel> gcModels = await findGeoCacheDetailsAsync(geoCacheCodes, searchOptionViewModel);
             return gcModels;
         }
 
-        private async Task<GeoCacheCodesModel> searchNearestCacheCodesAsync(SearchOptionViewModel searchOptionViewModel)
+        private async Task<List<String>> searchNearestCacheCodesAsync(SearchOptionViewModel searchOptionViewModel)
         {
-            GeoCacheCodesModel gcCodes = new GeoCacheCodesModel();
-            String latitude = searchOptionViewModel.Latitude.Replace(",",".").Trim();
+            List<String> geoCacheCodes = new List<String>();
+
+            String credentialsParam = _apiCredentials.GetString("ConsumerKey");
+            String latitude = searchOptionViewModel.Latitude.Replace(",", ".").Trim();
             String longitude = searchOptionViewModel.Longitude.Replace(",", ".").Trim();
-            int radius = searchOptionViewModel.Radius;
+            String myLocationParam = _uriResource.GetString("CenterParam") + latitude + "|" + longitude;
+            String radiusParam = _uriResource.GetString("RadiusParam") + searchOptionViewModel.Radius.ToString();
 
             using (HttpClient client = new HttpClient())
             {
                 prepareHttpClient(client);
 
-                String preparedRequestPath = _uriResource.GetString("NearestGeoCachesUri") + "?" 
-                    + _apiCredentials.GetString("ConsumerKey")
-                    + "&center=" + latitude + "|" + longitude + "&radius=" + radius;
+                String preparedRequestPath = _uriResource.GetString("NearestGeoCachesUri")
+                    + "?" + credentialsParam
+                    + "&" + myLocationParam
+                    + "&" + radiusParam;
 
                 // HTTP GET
                 HttpResponseMessage response = await client.GetAsync(preparedRequestPath);
                 if (response.IsSuccessStatusCode)
                 {
                     String responseString = await response.Content.ReadAsStringAsync();
-                    gcCodes = new GeoCacheCodesModel(responseString);
+                    geoCacheCodes = mapToCodeList(responseString);
                 }
             }
 
-            return gcCodes;
+            return geoCacheCodes;
         }
 
-        private async Task<List<GeoCacheModel>> searchGeoCacheDetailsAsync(GeoCacheCodesModel geoCacheCodes, SearchOptionViewModel searchOptionViewModel)
+        private async Task<GeoCacheModel> findGeoCacheDetailsAsync(string code, SearchOptionViewModel searchOptionViewModel)
         {
-            List<GeoCacheModel> gcModels = new List<GeoCacheModel>();
-            String latitude = searchOptionViewModel.Latitude.Replace(",", ".").Trim();
-            String longitude = searchOptionViewModel.Longitude.Replace(",", ".").Trim();
-            String fields = "code|name|location|type|status|distance";
+            GeoCacheModel geoCacheModel = new GeoCacheModel();
 
-            if (geoCacheCodes.Codes != null && geoCacheCodes.Codes.Count > 0)
+            if (code != null && code.Length > 0)
             {
+                String credentialsParam = _apiCredentials.GetString("ConsumerKey");
+                String cacheCodeParam = _uriResource.GetString("CacheCodeParam") + code;
+                String latitude = searchOptionViewModel.Latitude.Replace(",", ".").Trim();
+                String longitude = searchOptionViewModel.Longitude.Replace(",", ".").Trim();
+                String myLocationParam = _uriResource.GetString("MyLocationParam") + latitude + "|" + longitude;
+                String fieldsParam = _uriResource.GetString("FullFields");
+            
                 using (HttpClient client = new HttpClient())
                 {
                     prepareHttpClient(client);
 
-                    String preparedRequestUri = _uriResource.GetString("GeoCachesDetailsUri")
-                        + "?" + _apiCredentials.GetString("ConsumerKey")
-                        + "&cache_codes=" + geoCacheCodes.ToString()
-                        + "&my_location=" + latitude + "|" + longitude
-                        + "&fields=" + fields;
+                    String preparedRequestUri = _uriResource.GetString("GeoCacheDetailsUri")
+                        + "?" + credentialsParam
+                        + "&" + cacheCodeParam
+                        + "&" + myLocationParam
+                        + "&" + fieldsParam;
 
                     // HTTP GET
                     HttpResponseMessage response = await client.GetAsync(preparedRequestUri);
                     if (response.IsSuccessStatusCode)
                     {
                         String responseString = await response.Content.ReadAsStringAsync();
-                        gcModels = mapTo(responseString);
+                        geoCacheModel = new GeoCacheModel(responseString);
                     }
                 }
             }
 
-            return gcModels;
+            return geoCacheModel;
+        }
+
+        private async Task<List<GeoCacheModel>> findGeoCacheDetailsAsync(List<String> geoCacheCodes, SearchOptionViewModel searchOptionViewModel)
+        {
+            List<GeoCacheModel> geoCacheModels = new List<GeoCacheModel>();
+
+            if (geoCacheCodes != null && geoCacheCodes.Count > 0)
+            {
+                String credentialsParam = _apiCredentials.GetString("ConsumerKey");
+                String cacheCodesParam = _uriResource.GetString("CacheCodesParam") + transformCodes(geoCacheCodes);
+                String latitude = searchOptionViewModel.Latitude.Replace(",", ".").Trim();
+                String longitude = searchOptionViewModel.Longitude.Replace(",", ".").Trim();
+                String myLocationParam = _uriResource.GetString("MyLocationParam") + latitude + "|" + longitude;
+                String fieldsParam = _uriResource.GetString("SimpleFields");
+                            
+                using (HttpClient client = new HttpClient())
+                {
+                    prepareHttpClient(client);
+
+                    String preparedRequestUri = _uriResource.GetString("GeoCachesDetailsUri")
+                        + "?" + credentialsParam
+                        + "&" + cacheCodesParam
+                        + "&" + myLocationParam
+                        + "&" + fieldsParam;
+
+                    // HTTP GET
+                    HttpResponseMessage response = await client.GetAsync(preparedRequestUri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        String responseString = await response.Content.ReadAsStringAsync();
+                        geoCacheModels = mapToList(responseString);
+                    }
+                }
+            }
+
+            return geoCacheModels;
+        }
+
+        private string transformCodes(List<string> geoCacheCodes)
+        {
+            String strValue = "";
+            foreach (String geoCacheCode in geoCacheCodes)
+            {
+                strValue = strValue + "|" + geoCacheCode;
+            }
+            return strValue;
         }
 
         private void prepareHttpClient(HttpClient client) 
@@ -102,8 +168,8 @@ namespace GeoCacheingFinder.Service
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-
-        private List<GeoCacheModel> mapTo(String jsonString)
+        
+        private List<GeoCacheModel> mapToList(String jsonString)
         {
             List<GeoCacheModel> geoCacheModels = new List<GeoCacheModel>();
 
@@ -114,6 +180,23 @@ namespace GeoCacheingFinder.Service
             }
 
             return geoCacheModels;
+        }
+
+        private List<String> mapToCodeList(String jsonString)
+        {
+            List<String> codes = new List<String>();
+
+            JsonObject jsonObject = JsonObject.Parse(jsonString);
+
+            foreach (IJsonValue jsonValue in jsonObject.GetNamedArray("results", new JsonArray()))
+            {
+                if (jsonValue.ValueType == JsonValueType.String)
+                {
+                    codes.Add(jsonValue.GetString());
+                }
+            }
+
+            return codes;
         }
     }
 }

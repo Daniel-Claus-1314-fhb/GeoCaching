@@ -28,19 +28,29 @@ namespace GeoCacheingFinder.Domain
 
         public GeoCacheModel(JsonObject jsonObject)
         {
-            this.Code = jsonObject.GetNamedString("code", "");
-            this.Name = jsonObject.GetNamedString("name", "");
-            this.Location = jsonObject.GetNamedString("location", "");
-            this.Type = jsonObject.GetNamedString("type", "");
-            this.Status = jsonObject.GetNamedString("status", "");
-            this.Distance  = jsonObject.GetNamedNumber("distance", 0d).ToString();
-        
+            this.Code = jsonObject.GetNamedString(CodeKey, "");
+            this.GcCode = jsonObject.GetNamedString(GcCodeKey, "");
+            this.Name = jsonObject.GetNamedString(NameKey, "");
+            this.Location = jsonObject.GetNamedString(LocationKey, "");
+            this.Type = jsonObject.GetNamedString(TypeKey, "");
+            this.Status = jsonObject.GetNamedString(StatusKey, "");
+            this.Distance  = jsonObject.GetNamedNumber(DistanceKey, 0d).ToString();
+            this.Rating = jsonObject.GetNamedNumber(RatingKey, 0d).ToString();
+            this.Bearing = jsonObject.GetNamedString(BearingKey, "");
+            this.Size = jsonObject.GetNamedString(SizeKey, "");
+            this.Difficulty = jsonObject.GetNamedNumber(DifficultyKey, 0d).ToString();
+            this.Terrain = jsonObject.GetNamedNumber(TerrainKey, 0d).ToString();
+            this.ShortDescription = jsonObject.GetNamedString(ShortDescriptionKey, "");
+            this.Description = jsonObject.GetNamedString(DescriptionKey, "");
+            this.Url = jsonObject.GetNamedString(UrlKey, "");
         }
+
         //Properties
         /// <summary>
         /// Name of the geocache set by the author.
         /// </summary>
         private string _name;
+        public readonly string NameKey = "name";
         public string Name
         { 
             get { return _name; }
@@ -51,16 +61,29 @@ namespace GeoCacheingFinder.Domain
         /// Consists of letters and numbers. 
         /// </summary>
         private string _code;
+        public readonly string CodeKey = "code";
         public string Code
         {
             get { return _code; }
             set { _code = value; }
         }
         /// <summary>
+        /// Unique identifer of each geocache. 
+        /// Consists of letters and numbers. 
+        /// </summary>
+        private string _gcCode;
+        public readonly string GcCodeKey = "gc_code";
+        public string GcCode
+        {
+            get { return _gcCode; }
+            set { _gcCode = value; }
+        }
+        /// <summary>
         /// latitude|longitude
         /// 52.3871|13.0993 => Babelsberg, Potsdam
         /// </summary>
         private string _location;
+        public readonly string LocationKey = "location";
         public string Location
         {
             get { return _location; }
@@ -84,7 +107,6 @@ namespace GeoCacheingFinder.Domain
             get { return _latitude; }
             set { _latitude = value; }
         }
-
         /// <summary>
         /// Longitude of the given geolocation.
         /// Not given by API
@@ -99,6 +121,7 @@ namespace GeoCacheingFinder.Domain
         /// distance from the current location to the cache.
         /// </summary>
         private string _distance;
+        public readonly string DistanceKey = "distance";
         public string Distance
         {
             get { return _distance; }
@@ -109,21 +132,102 @@ namespace GeoCacheingFinder.Domain
         /// e.g. "traditional"
         /// </summary>
         private string _type;
+        public readonly string TypeKey = "type";
         public string Type
         {
             get { return _type; }
             set { _type = value; }
         }
         /// <summary>
+        /// Size of the geo cache
+        /// </summary>
+        private string _size;
+        public readonly string SizeKey = "size2";
+        public string Size
+        {
+            get { return _size; }
+            set { _size = value; }
+        }
+        /// <summary>
         /// Does the geocache is available.
         /// </summary>
         private string _status;
+        public readonly string StatusKey = "status";
         public string Status
         {
             get { return _status; }
             set { _status = value; }
         }
-
+        /// <summary>
+        /// Difficulty of finding the geo cache. 
+        /// </summary>
+        private string _difficulty;
+        public readonly string DifficultyKey = "difficulty";
+        public string Difficulty
+        {
+            get { return _difficulty; }
+            set { _difficulty = value; }
+        }
+        /// <summary>
+        /// Difficulty of terrain.
+        /// </summary>
+        private string _terrain;
+        public readonly string TerrainKey = "terrain";
+        public string Terrain
+        {
+            get { return _terrain; }
+            set { _terrain = value; }
+        }
+        /// <summary>
+        /// Short description of the geo cache.
+        /// </summary>
+        private string _shortDescription;
+        public readonly string ShortDescriptionKey = "short_description";
+        public string ShortDescription
+        {
+            get { return _shortDescription; }
+            set { _shortDescription = value; }
+        }
+        /// <summary>
+        /// Description of the geo cache.
+        /// </summary>
+        private string _description;
+        public readonly string DescriptionKey = "description";
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; }
+        }
+        /// <summary>
+        /// Rating of the geo cache.
+        /// </summary>
+        private string _rating;
+        public readonly string RatingKey = "rating";
+        public string Rating
+        {
+            get { return _rating; }
+            set { _rating = value; }
+        }
+        /// <summary>
+        /// URL to the web page of the geo cache.
+        /// </summary>
+        private string _url;
+        public readonly string UrlKey = "url";
+        public string Url
+        {
+            get { return _url; }
+            set { _url = value; }
+        }
+        /// <summary>
+        /// Bearing from the current location to the location of the geo cache.
+        /// </summary>
+        private string _bearing;
+        public readonly string BearingKey = "bearing2";
+        public string Bearing
+        {
+            get { return _bearing; }
+            set { _bearing = value; }
+        }
 
         public override string ToString()
         {
