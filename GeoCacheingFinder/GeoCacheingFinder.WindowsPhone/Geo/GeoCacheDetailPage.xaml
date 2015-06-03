@@ -8,7 +8,45 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Margin="12,0,12,12" DataContext="{Binding Path=_geoCacheViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition MinHeight="60" Height="auto" MaxHeight="120"/>
+            <RowDefinition MinHeight="0" Height="auto" MaxHeight="180"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Grid Row 0 -->
+        <TextBlock Grid.Row="0" Text="GeoCache" HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Top" 
+                   Style="{StaticResource HeaderTextBlockStyle}"/>
+        <ProgressBar x:Name="ProgressBar" Height="10" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
 
+        <!-- Grid Row 1 -->
+        <TextBlock Grid.Row="1" Text="Name des GeoCaches mit mehreren Zeilen. Damit der ganze Name angezeigt werden kann." 
+                   DataContext="{Binding Path=name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="WrapWholeWords"/>
+        
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="30" Height="*"/>
+                <RowDefinition MinHeight="30" Height="*"/>
+                <RowDefinition MinHeight="30" Height="*"/>
+                <RowDefinition MinHeight="30" Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="100" Width="*"/>
+                <ColumnDefinition MinWidth="100" Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="code:" DataContext="{Binding Code}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="gc_code:" DataContext="{Binding GcCode}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Latitude:" DataContext="{Binding Latitude}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="Longitude:" DataContext="{Binding Longitude}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Distanz:" DataContext="{Binding Distance}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="Rating:" DataContext="{Binding Ratings}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Difficulty:" DataContext="{Binding Difficulty}" Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Grid.Row="4" Grid.Column="1" Text="Terrain:" DataContext="{Binding Terrain}" Style="{StaticResource BodyTextBlockStyle}"/>
+
+        </Grid>
     </Grid>
 </Page>
