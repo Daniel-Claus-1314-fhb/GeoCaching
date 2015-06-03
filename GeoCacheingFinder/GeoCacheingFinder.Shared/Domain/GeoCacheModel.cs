@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using Windows.Data.Json;
 
 namespace GeoCacheingFinder.Domain
@@ -34,15 +35,25 @@ namespace GeoCacheingFinder.Domain
             this.Location = jsonObject.GetNamedString(LocationKey, "");
             this.Type = jsonObject.GetNamedString(TypeKey, "");
             this.Status = jsonObject.GetNamedString(StatusKey, "");
-            this.Distance  = jsonObject.GetNamedNumber(DistanceKey, 0d).ToString();
-            this.Rating = jsonObject.GetNamedNumber(RatingKey, 0d).ToString();
+            this.Distance = jsonObject.GetNamedNumber(DistanceKey, 0d).ToString();
             this.Bearing = jsonObject.GetNamedString(BearingKey, "");
             this.Size = jsonObject.GetNamedString(SizeKey, "");
             this.Difficulty = jsonObject.GetNamedNumber(DifficultyKey, 0d).ToString();
             this.Terrain = jsonObject.GetNamedNumber(TerrainKey, 0d).ToString();
             this.ShortDescription = jsonObject.GetNamedString(ShortDescriptionKey, "");
-            this.Description = jsonObject.GetNamedString(DescriptionKey, "");
             this.Url = jsonObject.GetNamedString(UrlKey, "");
+
+            string descriptionWithHtmlTags = jsonObject.GetNamedString(DescriptionKey, "");
+            this.Description = removeHtmlTags(descriptionWithHtmlTags);
+        }
+
+        private String removeHtmlTags(String input)
+        {
+            string replacement = " ";
+            Regex rgx = new Regex("(\\<[^\\>]*\\>)|(\\n)|(\\s+)");
+            Regex rgx2 = new Regex("\\s+");
+            input = rgx.Replace(input, replacement);
+            return rgx2.Replace(input, replacement);
         }
 
         //Properties
@@ -197,16 +208,6 @@ namespace GeoCacheingFinder.Domain
         {
             get { return _description; }
             set { _description = value; }
-        }
-        /// <summary>
-        /// Rating of the geo cache.
-        /// </summary>
-        private string _rating;
-        public readonly string RatingKey = "rating";
-        public string Rating
-        {
-            get { return _rating; }
-            set { _rating = value; }
         }
         /// <summary>
         /// URL to the web page of the geo cache.

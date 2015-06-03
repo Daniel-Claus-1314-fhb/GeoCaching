@@ -80,7 +80,7 @@
         </Grid>
 
         <!-- Grid Row 3 -->
-        <ListBox Grid.Row="3" x:Name="GeoCacheList" ItemsSource="{Binding}" Background="Transparent">
+        <ListBox Grid.Row="3" x:Name="GeoCacheList" ItemsSource="{Binding}" Background="Transparent" Tapped="GeoCacheList_Tapped" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -97,18 +97,18 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='keine Name'}" Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"/>
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Text="Code:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="Code:" Style="{StaticResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
                             <TextBlock Text="{Binding Code, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                            <TextBlock Text="Type:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="Type:" Style="{StaticResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
                             <TextBlock Text="{Binding Type, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
                         </StackPanel>
 
                         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Text="Distanz:" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="0,0,4,0" />
+                            <TextBlock Text="Distanz:" Style="{StaticResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
                             <TextBlock Text="{Binding Distance, FallbackValue='keine'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
-                            <TextBlock Text="m" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+                            <TextBlock Text="m" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="4,0,0,0"/>
                         </StackPanel>
 
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=Location, FallbackValue='keine Location'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>

@@ -1,4 +1,5 @@
 ﻿using GeoCacheingFinder.Domain;
+using GeoCacheingFinder.Domain.NavigationModel;
 using GeoCacheingFinder.Domain.ViewModel;
 using GeoCacheingFinder.Service;
 using System;
@@ -34,24 +35,18 @@ namespace GeoCacheingFinder.Geo
     /// </summary>
     public sealed partial class GeoCacheListPage : Page
     {
-        private Geolocator _geolocator = null;
         private CancellationTokenSource _cts = null;
 
         private ApiRequestService _apiRequestService;
         private SearchOptionViewModel _searchOptionViewModel;
+        private GeoLocationService _geoLocationService;
         
         public GeoCacheListPage()
         {
             this.InitializeComponent();
             this._apiRequestService = new ApiRequestService();
             this._searchOptionViewModel = new SearchOptionViewModel();
-            this._geolocator = new Geolocator();
-
-#if WINDOWS_PHONE_APP
-            // Desired Accuracy needs to be set
-            // before polling for desired accuracy.
-            _geolocator.DesiredAccuracyInMeters = (uint) this._searchOptionViewModel.GPSAccuracy;
-#endif
+            this._geoLocationService = new GeoLocationService();
         }
         
         /// <summary>
@@ -94,7 +89,6 @@ namespace GeoCacheingFinder.Geo
             ProgressBar.Visibility = Visibility.Visible;
 
             List<GeoCacheModel> gcModels = await _apiRequestService.searchNearestCachesAsync(_searchOptionViewModel);
-            Debug.WriteLine(gcModels.ToString());
             GeoCacheList.DataContext = gcModels;
 
             SearchButton.IsEnabled = true;
@@ -114,33 +108,20 @@ namespace GeoCacheingFinder.Geo
         private async void GPSButton_Checked(object sender, RoutedEventArgs e)
         {
             GPSButton.Content = "Cancel";
-            ProgressBar.Visibility = Visibility.Visible;
-            try
+            ProgressBar.Visibility = Visibility.Visible;            
+
+            // Get cancellation token
+            _cts = new CancellationTokenSource();
+            // Carry out the operation
+            Geoposition pos = await _geoLocationService.FindGeoLocation((uint) this._searchOptionViewModel.GPSAccuracy, _cts);
+            _cts = null;
+
+            if (pos != null)
             {
-                // Get cancellation token
-                _cts = new CancellationTokenSource();
-                CancellationToken token = _cts.Token;
-
-                // Carry out the operation
-                _geolocator.DesiredAccuracyInMeters = (uint) this._searchOptionViewModel.GPSAccuracy;
-                Geoposition pos = await _geolocator.GetGeopositionAsync().AsTask(token);
-
                 this._searchOptionViewModel.Latitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Latitude);
                 this._searchOptionViewModel.Longitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Longitude);
             }
-            catch (System.UnauthorizedAccessException)
-            {
-
-            }
-            catch (TaskCanceledException)
-            {
-
-            }
-            finally
-            {
-                _cts = null;
-            }
-
+            
             GPSButton.Content = "GPS";
             GPSButton.IsChecked = false;
             ProgressBar.Visibility = Visibility.Collapsed;
@@ -153,8 +134,17 @@ namespace GeoCacheingFinder.Geo
                 _cts.Cancel();
                 _cts = null;
             }
-            GPSButton.Content = "GPS";
-            ProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void GeoCacheList_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ListBox listbox = (ListBox) sender;
+            GeoCacheModel selectedGeoCacheModel = (GeoCacheModel) listbox.SelectedItem;
+            if (selectedGeoCacheModel != null)
+            {
+                DetailPageParamModel paramModel = new DetailPageParamModel(selectedGeoCacheModel.Code, _searchOptionViewModel.Latitude, _searchOptionViewModel.Longitude);
+                Frame.Navigate(typeof(Geo.GeoCacheDetailPage), paramModel);
+            }
         }
     }
 }
