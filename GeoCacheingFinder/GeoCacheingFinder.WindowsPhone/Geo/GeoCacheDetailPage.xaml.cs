@@ -34,7 +34,9 @@ namespace GeoCacheingFinder.Geo
         private CancellationTokenSource _cts;
         private ApiRequestService _apiRequestService;
         private GeoCacheViewModel _geoCacheViewModel;
+        private GeoCacheModel _geoCacheModel;
         private GeoLocationService _geoLocationService;
+        private CacheStorageService _cacheStorageService;
 
         public GeoCacheDetailPage()
         {
@@ -42,6 +44,7 @@ namespace GeoCacheingFinder.Geo
             this._apiRequestService = new ApiRequestService();
             this._geoCacheViewModel = new GeoCacheViewModel();
             this._geoLocationService = new GeoLocationService();
+            this._cacheStorageService = new CacheStorageService();
         }
 
         /// <summary>
@@ -67,10 +70,10 @@ namespace GeoCacheingFinder.Geo
         private async Task<GeoCacheViewModel> FindGeoCacheDetailsAsync(String code, String latitude, String longitude)
         {
             
-            GeoCacheModel geoCacheModel = await this._apiRequestService.findCacheByCodeAsync(code, latitude, longitude);
-            if (geoCacheModel != null)
+            this._geoCacheModel = await this._apiRequestService.findCacheByCodeAsync(code, latitude, longitude);
+            if (_geoCacheModel != null)
             {
-                return new GeoCacheViewModel(geoCacheModel);
+                return new GeoCacheViewModel(_geoCacheModel);
             }
             else
             {
@@ -103,7 +106,7 @@ namespace GeoCacheingFinder.Geo
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-
+            _cacheStorageService.AddCacheToFavorite(_geoCacheModel);
         }
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)

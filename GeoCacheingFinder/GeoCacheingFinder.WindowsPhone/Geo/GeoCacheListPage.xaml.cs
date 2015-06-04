@@ -146,5 +146,10 @@ namespace GeoCacheingFinder.Geo
                 Frame.Navigate(typeof(Geo.GeoCacheDetailPage), paramModel);
             }
         }
+
+        private void FavoritenAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Geo.FavoritenPage));
+        }
     }
 }

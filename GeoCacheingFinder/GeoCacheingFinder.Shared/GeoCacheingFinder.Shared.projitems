@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Domain\ViewModel\GeoCacheViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Domain\ViewModel\SearchOptionViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\ApiRequestService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\CacheStorageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\GeoLocationService.cs" />
   </ItemGroup>
   <ItemGroup>

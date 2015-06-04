@@ -4,9 +4,12 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.Data.Json;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace GeoCacheingFinder.Domain
 {
+    [Serializable()]
     public class GeoCacheModel
     {
         public GeoCacheModel() { }
@@ -230,6 +233,7 @@ namespace GeoCacheingFinder.Domain
             set { _bearing = value; }
         }
 
+        [field: NonSerialized()]
         public override string ToString()
         {
             return "code: " + Code + ", name: " + Name + ", loaction: " + Location + 

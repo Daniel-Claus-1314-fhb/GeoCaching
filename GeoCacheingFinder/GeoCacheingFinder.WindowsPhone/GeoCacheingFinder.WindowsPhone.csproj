@@ -80,6 +80,13 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\NavigationHelper.cs" />
+    <Compile Include="Common\ObservableDictionary.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Geo\FavoritenPage.xaml.cs">
+      <DependentUpon>FavoritenPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Geo\GeoCacheDetailPage.xaml.cs">
       <DependentUpon>GeoCacheDetailPage.xaml</DependentUpon>
     </Compile>
@@ -105,6 +112,10 @@
     <Content Include="Assets\WideLogo.scale-240.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Geo\FavoritenPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Geo\GeoCacheDetailPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
