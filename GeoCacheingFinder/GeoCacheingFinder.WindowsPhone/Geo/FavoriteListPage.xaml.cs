@@ -1,5 +1,6 @@
 ﻿using GeoCacheingFinder.Common;
 using GeoCacheingFinder.Domain;
+using GeoCacheingFinder.Domain.NavigationModel;
 using GeoCacheingFinder.Service;
 using System;
 using System.Collections.Generic;
@@ -25,13 +26,13 @@ namespace GeoCacheingFinder.Geo
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Frames navigiert werden kann.
     /// </summary>
-    public sealed partial class FavoritenPage : Page
+    public sealed partial class FavoriteListPage : Page
     {
         private CacheStorageService _cacheStorageService;
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        public FavoritenPage()
+        public FavoriteListPage()
         {
             this.InitializeComponent();
 
@@ -102,10 +103,10 @@ namespace GeoCacheingFinder.Geo
         /// </summary>
         /// <param name="e">Stellt Daten für Navigationsmethoden und -ereignisse bereit.
         /// Handler, bei denen die Navigationsanforderung nicht abgebrochen werden kann.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            List<GeoCacheModel> geoCacheModels = this._cacheStorageService.findAllCachesFormFavorite();
+            List<GeoCacheModel> geoCacheModels = await this._cacheStorageService.FindAllGeoCachesFormFavoriteAsync();
             GeoCacheList.DataContext = geoCacheModels;
         }
 
@@ -118,7 +119,14 @@ namespace GeoCacheingFinder.Geo
 
         private void GeoCacheList_Tapped(object sender, TappedRoutedEventArgs e)
         {
-
+            ListBox listbox = (ListBox)sender;
+            GeoCacheModel selectedGeoCacheModel = (GeoCacheModel)listbox.SelectedItem;
+            if (selectedGeoCacheModel != null)
+            {
+                DetailPageParamModel paramModel = new DetailPageParamModel(selectedGeoCacheModel.Code, selectedGeoCacheModel.IsFavorite,
+                    null, null);
+                Frame.Navigate(typeof(Geo.GeoCacheDetailPage), paramModel);
+            }
         }
     }
 }

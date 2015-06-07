@@ -9,12 +9,13 @@ namespace GeoCacheingFinder.Domain.NavigationModel
 
         public DetailPageParamModel() { }
 
-        public DetailPageParamModel(String code, String latitude, String longitude) 
+        public DetailPageParamModel(String code, bool isFavorite, String currentLatitude, String CurrentLongitude) 
 
         {
             this.Code = code;
-            this.Latitude = latitude;
-            this.Longitude = longitude;
+            this.IsFavorite = isFavorite;
+            this.Latitude = currentLatitude;
+            this.Longitude = CurrentLongitude;
         }
 
         private String _code;
@@ -36,6 +37,13 @@ namespace GeoCacheingFinder.Domain.NavigationModel
         {
             get { return _longitude; }
             set { _longitude = value; }
+        }
+
+        private bool _isFavorite;
+        public bool IsFavorite
+        {
+            get { return _isFavorite; }
+            set { _isFavorite = value; }
         }
     }
 }

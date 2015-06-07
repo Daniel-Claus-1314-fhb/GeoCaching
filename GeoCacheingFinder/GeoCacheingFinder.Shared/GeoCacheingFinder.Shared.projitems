@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\ApiRequestService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\CacheStorageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\GeoLocationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\OptionStorageService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de-DE\ApiCredentials.resw" />

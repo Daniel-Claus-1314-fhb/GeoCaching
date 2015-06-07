@@ -47,7 +47,7 @@ namespace GeoCacheingFinder
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Geo.GeoCacheListPage));
+            Frame.Navigate(typeof(Geo.SearchListPage));
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

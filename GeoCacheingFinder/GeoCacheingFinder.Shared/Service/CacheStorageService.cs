@@ -1,100 +1,109 @@
 ﻿using GeoCacheingFinder.Domain;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace GeoCacheingFinder.Service
 {
     public class CacheStorageService
     {
-        private const String FavoriteKey = "favoriteList";
-        private const String ContainerKey = "GeoCacheContainer";
-
-        private ApplicationDataContainer _container = null;
-
-        /// <summary>
-        /// Constructor init localsettings and container
-        /// </summary>
-        public CacheStorageService()
-        {
-            ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-
-            if (localSettings.Containers.ContainsKey(FavoriteKey))
-            {
-                _container = localSettings.Containers[FavoriteKey];
-            }
-            else
-            {
-                _container = localSettings.CreateContainer(FavoriteKey, Windows.Storage.ApplicationDataCreateDisposition.Always);
-            }
-        }
-
+        private const string FileName = "GeoCacheFavorite.txt";
+        
         /// <summary>
         /// Delivers all geo caches which are stored as favorite.
         /// </summary>
         /// <returns></returns>
-        public List<GeoCacheModel> findAllCachesFormFavorite()
+        public async Task<List<GeoCacheModel>> FindAllGeoCachesFormFavoriteAsync()
         {
-            List<GeoCacheModel> storedGeoCacheModels = new List<GeoCacheModel>();
+            List<GeoCacheModel> loadGeoCacheModels = new List<GeoCacheModel>();
+            
+            String loadGeoCachesJsonString = await ReadFromFileAsync(FileName);
 
-            if (_container != null)
+            if (loadGeoCachesJsonString != null && loadGeoCachesJsonString.Length > 0)
             {
-                if (_container.Values.ContainsKey(FavoriteKey))
-                {
-                    storedGeoCacheModels = (List<GeoCacheModel>)_container.Values[FavoriteKey];
-                }
+                loadGeoCacheModels = JsonConvert.DeserializeObject<List<GeoCacheModel>>(loadGeoCachesJsonString);
             }
-            return storedGeoCacheModels;
+            return loadGeoCacheModels;
         }
 
-        public GeoCacheModel findCacheByCodeFormFavorite(String code)
+        public async Task<GeoCacheModel> FindGeoCacheByCodeFormFavoriteAsync(String code)
         {
-            GeoCacheModel storedGeoCacheModel = null;
+            GeoCacheModel loadGeoCacheModel = null;
 
             if (code != null)
             {
-                List<GeoCacheModel> storedGeoCacheModels = new List<GeoCacheModel>();
-                if (_container != null)
-                {
-                    if (_container.Values.ContainsKey(FavoriteKey))
-                    {
-                        storedGeoCacheModels = (List<GeoCacheModel>)_container.Values[FavoriteKey];
-                    }
-                }
+                List<GeoCacheModel> loadGeoCacheModels = await FindAllGeoCachesFormFavoriteAsync();
 
-                foreach (GeoCacheModel geoCacheModel in storedGeoCacheModels)
+                foreach (GeoCacheModel geoCacheModel in loadGeoCacheModels)
                 {
                     if (geoCacheModel.Code.Contains(code))
                     {
-                        storedGeoCacheModel = geoCacheModel;
+                        loadGeoCacheModel = geoCacheModel;
+                        break;
                     }
                 }
             }
-            return storedGeoCacheModel;
+            return loadGeoCacheModel;
         }
 
         /// <summary>
         /// Adds an certain geo cache from the favorite geo cache list.
         /// </summary>
         /// <param name="geoCacheModel"></param>
-        public void AddCacheToFavorite(GeoCacheModel geoCacheModel)
+        public async void AddGeoCacheToFavoriteAsync(GeoCacheModel addGeoCacheModel)
         {
-            if (geoCacheModel != null)
+            if (addGeoCacheModel != null)
             {
-                if (_container != null)
+                bool hasUpdated = false;
+                List<GeoCacheModel> loadGeoCacheModels = await FindAllGeoCachesFormFavoriteAsync();
+
+                foreach (GeoCacheModel loadGeoCacheModel in loadGeoCacheModels)
                 {
-                    List<GeoCacheModel> storedGeoCacheModels;
-                    if (_container.Values.ContainsKey(FavoriteKey))
+                    if (loadGeoCacheModel.Code == addGeoCacheModel.Code) 
                     {
-                        storedGeoCacheModels = (List<GeoCacheModel>)_container.Values[FavoriteKey];
+                        int index = loadGeoCacheModels.IndexOf(loadGeoCacheModel);
+                        loadGeoCacheModels.Remove(loadGeoCacheModel);
+                        loadGeoCacheModels.Insert(index, addGeoCacheModel);
+                        hasUpdated = true;
+                        break;
                     }
-                    else
+                }
+
+                if (!hasUpdated)
+                {
+                    loadGeoCacheModels.Add(addGeoCacheModel);
+                }
+                String saveGeoCachesJsonString = JsonConvert.SerializeObject(loadGeoCacheModels);
+                WriteToFileAsync(FileName, saveGeoCachesJsonString);
+            }
+        }
+
+        public async void UpdateGeoCacheInFavoriteAsync(GeoCacheModel updateGeoCacheModel)
+        {
+            if (updateGeoCacheModel != null)
+            {
+                bool hasUpdated = false;
+                List<GeoCacheModel> loadGeoCacheModels = await FindAllGeoCachesFormFavoriteAsync();
+
+                foreach (GeoCacheModel loadGeoCacheModel in loadGeoCacheModels)
+                {
+                    if (loadGeoCacheModel.Code == updateGeoCacheModel.Code) 
                     {
-                        storedGeoCacheModels = new List<GeoCacheModel>();
+                        int index = loadGeoCacheModels.IndexOf(loadGeoCacheModel);
+                        loadGeoCacheModels.Remove(loadGeoCacheModel);
+                        loadGeoCacheModels.Insert(index, updateGeoCacheModel);
+                        hasUpdated = true;
+                        break;
                     }
-                    storedGeoCacheModels.Add(geoCacheModel);
-                    _container.Values[FavoriteKey] = storedGeoCacheModels;
+                }
+
+                if (hasUpdated)
+                {
+                    String saveGeoCachesJsonString = JsonConvert.SerializeObject(loadGeoCacheModels);
+                    WriteToFileAsync(FileName, saveGeoCachesJsonString);
                 }
             }
         }
@@ -103,29 +112,63 @@ namespace GeoCacheingFinder.Service
         /// Removes an certain geo cache from the favorite geo cache list.
         /// </summary>
         /// <param name="geoCacheModel"></param>
-        public void removeCacheToFavorite(GeoCacheModel geoCacheModel)
+        public async void DeleteGeoCacheFromFavoriteAsync(GeoCacheModel deleteGeoCacheModel)
         {
-            if (geoCacheModel != null)
+            if (deleteGeoCacheModel != null)
             {
-                if (_container != null)
-                {
-                    List<GeoCacheModel> storedGeoCacheModels;
-                    if (_container.Values.ContainsKey(FavoriteKey))
-                    {
-                        storedGeoCacheModels = (List<GeoCacheModel>)_container.Values[FavoriteKey];
-                    }
-                    else
-                    {
-                        storedGeoCacheModels = new List<GeoCacheModel>();
-                    }
+                List<GeoCacheModel> loadGeoCacheModels = await FindAllGeoCachesFormFavoriteAsync();
 
-                    if (storedGeoCacheModels.Count > 0 && storedGeoCacheModels.Contains(geoCacheModel))
+                foreach (GeoCacheModel loadGeoCacheModel in loadGeoCacheModels)
+                {
+                    if (loadGeoCacheModel.Code == deleteGeoCacheModel.Code)
                     {
-                        storedGeoCacheModels.Remove(geoCacheModel);
-                        _container.Values[FavoriteKey] = storedGeoCacheModels;
+                        int index = loadGeoCacheModels.IndexOf(loadGeoCacheModel);
+                        loadGeoCacheModels.Remove(loadGeoCacheModel);
+                        break;
                     }
                 }
+
+                String saveGeoCachesJsonString = JsonConvert.SerializeObject(loadGeoCacheModels);
+                WriteToFileAsync(FileName, saveGeoCachesJsonString);
+                
             }
+        }
+
+        /// <summary>
+        /// clears the list of favorites
+        /// </summary>
+        public void DeleteAllGeoCachesFromFavoriteAsync()
+        {
+            List<GeoCacheModel> loadGeoCacheModels = new List<GeoCacheModel>();
+            
+            String saveGeoCachesJsonString = JsonConvert.SerializeObject(loadGeoCacheModels);
+            WriteToFileAsync(FileName, saveGeoCachesJsonString);            
+        }
+
+        private async void WriteToFileAsync(String fileName, String jsonString)
+        {
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            // Write data to a file
+            StorageFile file = await localFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            await FileIO.WriteTextAsync(file, jsonString);
+        }
+
+
+        private async Task<String> ReadFromFileAsync(String fileName)
+        {
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            String jsonString = null;
+
+            try
+            {
+                StorageFile file = await localFolder.GetFileAsync(fileName);
+                jsonString = await FileIO.ReadTextAsync(file);
+            }
+            catch (Exception)
+            {
+
+            }
+            return jsonString;
         }
     }
 }

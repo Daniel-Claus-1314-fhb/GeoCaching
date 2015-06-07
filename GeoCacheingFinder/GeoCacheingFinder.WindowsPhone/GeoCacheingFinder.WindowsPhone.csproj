@@ -84,14 +84,17 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="Geo\FavoritenPage.xaml.cs">
-      <DependentUpon>FavoritenPage.xaml</DependentUpon>
+    <Compile Include="Geo\FavoriteListPage.xaml.cs">
+      <DependentUpon>FavoriteListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Geo\GeoCacheDetailPage.xaml.cs">
       <DependentUpon>GeoCacheDetailPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Geo\GeoCacheListPage.xaml.cs">
-      <DependentUpon>GeoCacheListPage.xaml</DependentUpon>
+    <Compile Include="Geo\SearchListPage.xaml.cs">
+      <DependentUpon>SearchListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Geo\OptionPage.xaml.cs">
+      <DependentUpon>OptionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -112,7 +115,7 @@
     <Content Include="Assets\WideLogo.scale-240.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Geo\FavoritenPage.xaml">
+    <Page Include="Geo\FavoriteListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -120,7 +123,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Geo\GeoCacheListPage.xaml">
+    <Page Include="Geo\SearchListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Geo\OptionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

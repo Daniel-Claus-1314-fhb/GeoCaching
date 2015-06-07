@@ -4,17 +4,18 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.Data.Json;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace GeoCacheingFinder.Domain
 {
-    [Serializable()]
     public class GeoCacheModel
     {
-        public GeoCacheModel() { }
+        public GeoCacheModel()
+        {
+            this.IsFavorite = false;
+        }
         public GeoCacheModel(String Name, String Code, String Location, String Type, String Status)
         {
+            this.IsFavorite = false;
             this.Name = Name;
             this.Code = Code;
             this.Location = Location;
@@ -32,6 +33,7 @@ namespace GeoCacheingFinder.Domain
 
         public GeoCacheModel(JsonObject jsonObject)
         {
+            this.IsFavorite = false;
             this.Code = jsonObject.GetNamedString(CodeKey, "");
             this.GcCode = jsonObject.GetNamedString(GcCodeKey, "");
             this.Name = jsonObject.GetNamedString(NameKey, "");
@@ -60,6 +62,12 @@ namespace GeoCacheingFinder.Domain
         }
 
         //Properties
+        private bool _isFavorite;
+        public bool IsFavorite
+        {
+            get { return _isFavorite; }
+            set { _isFavorite = value; }
+        }
         /// <summary>
         /// Name of the geocache set by the author.
         /// </summary>
@@ -233,7 +241,6 @@ namespace GeoCacheingFinder.Domain
             set { _bearing = value; }
         }
 
-        [field: NonSerialized()]
         public override string ToString()
         {
             return "code: " + Code + ", name: " + Name + ", loaction: " + Location + 

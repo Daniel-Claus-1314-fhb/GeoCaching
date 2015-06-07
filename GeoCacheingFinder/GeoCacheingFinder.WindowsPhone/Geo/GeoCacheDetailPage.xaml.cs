@@ -60,11 +60,36 @@ namespace GeoCacheingFinder.Geo
             {
                 ProgressBar.Visibility = Visibility.Visible;
                 DetailPageParamModel paramModel = (DetailPageParamModel)e.Parameter;
-                _geoCacheViewModel = await FindGeoCacheDetailsAsync(paramModel.Code, paramModel.Latitude, paramModel.Longitude);
+
+                if (paramModel.IsFavorite)
+                {
+                    _geoCacheModel = await _cacheStorageService.FindGeoCacheByCodeFormFavoriteAsync(paramModel.Code);
+                    _geoCacheViewModel = new GeoCacheViewModel(_geoCacheModel);
+                }
+                else
+                {
+                    _geoCacheViewModel = await FindGeoCacheDetailsAsync(paramModel.Code, paramModel.Latitude, paramModel.Longitude);
+                }
+
+                SetDetailViewState(_geoCacheModel.IsFavorite);
                 ProgressBar.Visibility = Visibility.Collapsed;
             }
 
             DetailView.DataContext = _geoCacheViewModel;
+        }
+
+        private void SetDetailViewState(bool isFavoriteState)
+        {
+            if (isFavoriteState)
+            {
+                SaveButton.IsEnabled = false;
+                DeleteButton.IsEnabled = true;
+            }
+            else
+            {
+                SaveButton.IsEnabled = true;
+                DeleteButton.IsEnabled = false;
+            }
         }
 
         private async Task<GeoCacheViewModel> FindGeoCacheDetailsAsync(String code, String latitude, String longitude)
@@ -106,7 +131,17 @@ namespace GeoCacheingFinder.Geo
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _cacheStorageService.AddCacheToFavorite(_geoCacheModel);
+            _geoCacheModel.IsFavorite = true;
+            _cacheStorageService.AddGeoCacheToFavoriteAsync(_geoCacheModel);
+            SetDetailViewState(_geoCacheModel.IsFavorite);
+        }
+
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            _geoCacheModel.IsFavorite = false;
+            _cacheStorageService.DeleteGeoCacheFromFavoriteAsync(_geoCacheModel);
+            SetDetailViewState(_geoCacheModel.IsFavorite);
         }
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)

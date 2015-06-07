@@ -8,9 +8,10 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Minimal">
-            <AppBarButton Icon="Attach" Label="speichern" Click="SaveButton_Click"/>
-            <AppBarButton x:Name="RefreshButton" Icon="Globe" Label="Position" Click="RefreshButton_Click" Visibility="Visible"/>
+        <CommandBar ClosedDisplayMode="Compact">
+            <AppBarButton x:Name="SaveButton" Icon="Favorite" Label="Favorite" Click="SaveButton_Click" IsEnabled="true"/>
+            <AppBarButton x:Name="DeleteButton" Icon="UnFavorite" Label="Entfernen" Click="DeleteButton_Click" IsEnabled="False"/>
+            <AppBarButton x:Name="RefreshButton" Icon="Refresh" Label="Aktualisieren" Click="RefreshButton_Click" Visibility="Visible"/>
             <AppBarButton x:Name="CancelButton" Icon="Cancel" Label="abbrechen" Click="AbbrechenButton_Click" Visibility="Collapsed"/>
         </CommandBar>
     </Page.BottomAppBar>
@@ -40,7 +41,7 @@
         </StackPanel>
 
         <!-- Grid Row 3 -->
-        <Border Grid.Row="3" VerticalAlignment="Top" BorderThickness="2" Height="auto" BorderBrush="{StaticResource PhoneAccentBrush}" Padding="8,0" Margin="0,0,0,8" >
+        <Border Grid.Row="3" VerticalAlignment="Top" BorderThickness="1" Height="auto" BorderBrush="{StaticResource PhoneAccentBrush}" Padding="8,0" Margin="0,0,0,8" >
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition MinHeight="30" Height="*"/>
