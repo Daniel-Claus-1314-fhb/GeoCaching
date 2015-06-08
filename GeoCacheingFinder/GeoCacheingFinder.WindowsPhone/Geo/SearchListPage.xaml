@@ -39,19 +39,25 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                <TextBlock Text="Latitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Latitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding Latitude}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
             </StackPanel>
 
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <TextBlock Text="Longitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Longitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding Longitude}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
             </StackPanel>
             
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                <TextBlock Text="Radius:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Radius:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding Radius}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
                 <TextBlock Text="km" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Text="GPS Genauigkeit:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding GPSAccuracy}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                <TextBlock Text="m" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" Margin="4,0,0,0"/>
             </StackPanel>
         </Grid>
 
