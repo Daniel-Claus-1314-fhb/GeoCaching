@@ -56,7 +56,8 @@ namespace GeoCacheingFinder.Geo
         {
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 
-            _searchOptionViewModel = _optionStorageService.loadSearchOptionFromSetting();
+            _searchOptionViewModel = _optionStorageService.LoadSearchOptionFromSetting();
+            SearchProperties.DataContext = _searchOptionViewModel;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -87,9 +88,8 @@ namespace GeoCacheingFinder.Geo
             GeoCacheModel selectedGeoCacheModel = (GeoCacheModel)listbox.SelectedItem;
             if (selectedGeoCacheModel != null)
             {
-                DetailPageParamModel paramModel = new DetailPageParamModel(selectedGeoCacheModel.Code, selectedGeoCacheModel.IsFavorite, 
-                    _searchOptionViewModel.Latitude, _searchOptionViewModel.Longitude);
-                Frame.Navigate(typeof(Geo.GeoCacheDetailPage), paramModel);
+                DetailPageParamModel paramModel = new DetailPageParamModel(selectedGeoCacheModel.Code, selectedGeoCacheModel.IsFavorite);
+                Frame.Navigate(typeof(Geo.DetailPage), paramModel);
             }
         }
 

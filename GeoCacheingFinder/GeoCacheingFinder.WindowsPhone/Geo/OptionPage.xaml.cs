@@ -81,7 +81,7 @@ namespace GeoCacheingFinder.Geo
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            _searchOptionViewModel = _optionStorageService.loadSearchOptionFromSetting();
+            _searchOptionViewModel = _optionStorageService.LoadSearchOptionFromSetting();
             SearchOption.DataContext = _searchOptionViewModel;
         }
 

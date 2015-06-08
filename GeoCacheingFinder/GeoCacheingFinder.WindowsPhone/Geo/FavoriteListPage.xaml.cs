@@ -29,6 +29,7 @@ namespace GeoCacheingFinder.Geo
     public sealed partial class FavoriteListPage : Page
     {
         private CacheStorageService _cacheStorageService;
+        List<GeoCacheModel> _geoCacheModels;
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -71,9 +72,10 @@ namespace GeoCacheingFinder.Geo
         /// <see cref="Frame.Navigate(Type, Object)"/> als diese Seite ursprünglich angefordert wurde und
         /// ein Wörterbuch des Zustands, der von dieser Seite während einer früheren
         /// beibehalten wurde.  Der Zustand ist beim ersten Aufrufen einer Seite NULL.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
+            _geoCacheModels = await this._cacheStorageService.FindAllGeoCachesFormFavoriteAsync();
+            GeoCacheList.DataContext = _geoCacheModels;
         }
 
         /// <summary>
@@ -86,6 +88,7 @@ namespace GeoCacheingFinder.Geo
         /// serialisierbarer Zustand.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
+
         }
 
         #region NavigationHelper-Registrierung
@@ -103,11 +106,9 @@ namespace GeoCacheingFinder.Geo
         /// </summary>
         /// <param name="e">Stellt Daten für Navigationsmethoden und -ereignisse bereit.
         /// Handler, bei denen die Navigationsanforderung nicht abgebrochen werden kann.</param>
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            List<GeoCacheModel> geoCacheModels = await this._cacheStorageService.FindAllGeoCachesFormFavoriteAsync();
-            GeoCacheList.DataContext = geoCacheModels;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -123,10 +124,18 @@ namespace GeoCacheingFinder.Geo
             GeoCacheModel selectedGeoCacheModel = (GeoCacheModel)listbox.SelectedItem;
             if (selectedGeoCacheModel != null)
             {
-                DetailPageParamModel paramModel = new DetailPageParamModel(selectedGeoCacheModel.Code, selectedGeoCacheModel.IsFavorite,
-                    null, null);
-                Frame.Navigate(typeof(Geo.GeoCacheDetailPage), paramModel);
+                DetailPageParamModel paramModel = new DetailPageParamModel(selectedGeoCacheModel.Code, selectedGeoCacheModel.IsFavorite);
+                Frame.Navigate(typeof(Geo.DetailPage), paramModel);
             }
+        }
+
+        private void DeleteAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteAppBarButton.IsEnabled = false;
+            _cacheStorageService.DeleteAllGeoCachesFromFavoriteAsync();
+            _geoCacheModels.Clear();
+            GeoCacheList.DataContext = null;
+            DeleteAppBarButton.IsEnabled = true;
         }
     }
 }

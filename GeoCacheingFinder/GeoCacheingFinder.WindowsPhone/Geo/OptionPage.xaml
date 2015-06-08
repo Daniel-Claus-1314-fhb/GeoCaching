@@ -33,8 +33,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
-                <TextBlock Text="Suche Einstellungen" Style="{ThemeResource ControlHeaderTextBlockStyle}" Margin="0,12,0,8"/>
-                <Border BorderThickness="1" BorderBrush="{ThemeResource PhoneAccentBrush}" Padding="8,0">
+                <TextBlock Text="Einstellungen für die Suche:" Style="{ThemeResource ControlHeaderTextBlockStyle}" Margin="0,12,0,8"/>
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
@@ -48,12 +47,12 @@
 
                         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,0" >
                             <TextBlock Text="Latitude:" Style="{ThemeResource BaseTextBlockStyle}"/>
-                            <TextBox Width="Auto" Text="{Binding Latitude, Mode=TwoWay}"/>
+                            <TextBox Width="Auto" Text="{Binding Latitude, Mode=TwoWay}" InputScope="Number" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="0" Grid.Column="1" Margin="12,0,0,0">
                             <TextBlock Text="Longitude:" Style="{ThemeResource BaseTextBlockStyle}"/>
-                            <TextBox Width="Auto" Text="{Binding Longitude, Mode=TwoWay}"/>
+                            <TextBox Width="Auto" Text="{Binding Longitude, Mode=TwoWay}" InputScope="Number" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
@@ -67,23 +66,20 @@
                             TickFrequency="5" Minimum="5" />
                         </StackPanel>
                     </Grid>
-                </Border>
             </StackPanel>
 
             <StackPanel Grid.Row="1">
-                <TextBlock Text="GPS Einstellungen" Style="{ThemeResource ControlHeaderTextBlockStyle}" Margin="0,12,0,8"/>
-                <Border BorderThickness="1" BorderBrush="{ThemeResource PhoneAccentBrush}" Padding="8,0">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="GPS Genauigkeit:" Style="{ThemeResource BaseTextBlockStyle}"/>
-                            <TextBlock Text="{Binding GPSAccuracy}" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,0" />
-                            <TextBlock Text="m" Style="{ThemeResource BaseTextBlockStyle}"/>
-                        </StackPanel>
-
-                        <Slider x:Name="GPSAccuracy" Orientation="Horizontal" Maximum="100" StepFrequency="10" Value="{Binding GPSAccuracy, Mode=TwoWay}" 
-                            TickFrequency="10" Minimum="10" />
+                <TextBlock Text="GPS Einstellungen:" Style="{ThemeResource ControlHeaderTextBlockStyle}" Margin="0,12,0,8"/>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Genauigkeit:" Style="{ThemeResource BaseTextBlockStyle}"/>
+                        <TextBlock Text="{Binding GPSAccuracy}" Style="{ThemeResource BaseTextBlockStyle}" Margin="4,0" />
+                        <TextBlock Text="m" Style="{ThemeResource BaseTextBlockStyle}"/>
                     </StackPanel>
-                </Border>
+
+                    <Slider x:Name="GPSAccuracy" Orientation="Horizontal" Maximum="100" StepFrequency="10" Value="{Binding GPSAccuracy, Mode=TwoWay}" 
+                            TickFrequency="10" Minimum="10" />
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

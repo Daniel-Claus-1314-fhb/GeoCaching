@@ -29,7 +29,7 @@ namespace GeoCacheingFinder.Geo
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet werden kann oder auf die innerhalb eines Rahmens navigiert werden kann.
     /// </summary>
-    public sealed partial class GeoCacheDetailPage : Page
+    public sealed partial class DetailPage : Page
     {
         private CancellationTokenSource _cts;
         private ApiRequestService _apiRequestService;
@@ -37,14 +37,18 @@ namespace GeoCacheingFinder.Geo
         private GeoCacheModel _geoCacheModel;
         private GeoLocationService _geoLocationService;
         private CacheStorageService _cacheStorageService;
+        private OptionStorageService _optionStorageService;
+        private SearchOptionViewModel _searchOptionViewModel;
 
-        public GeoCacheDetailPage()
+        public DetailPage()
         {
             this.InitializeComponent();
             this._apiRequestService = new ApiRequestService();
             this._geoCacheViewModel = new GeoCacheViewModel();
             this._geoLocationService = new GeoLocationService();
             this._cacheStorageService = new CacheStorageService();
+            this._optionStorageService = new OptionStorageService();
+            this._searchOptionViewModel = new SearchOptionViewModel();
         }
 
         /// <summary>
@@ -56,26 +60,24 @@ namespace GeoCacheingFinder.Geo
         {
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 
+            _searchOptionViewModel = _optionStorageService.LoadSearchOptionFromSetting();
+
             if (e.Parameter != null)
             {
                 ProgressBar.Visibility = Visibility.Visible;
                 DetailPageParamModel paramModel = (DetailPageParamModel)e.Parameter;
 
                 if (paramModel.IsFavorite)
-                {
                     _geoCacheModel = await _cacheStorageService.FindGeoCacheByCodeFormFavoriteAsync(paramModel.Code);
-                    _geoCacheViewModel = new GeoCacheViewModel(_geoCacheModel);
-                }
                 else
-                {
-                    _geoCacheViewModel = await FindGeoCacheDetailsAsync(paramModel.Code, paramModel.Latitude, paramModel.Longitude);
-                }
+                    _geoCacheModel = await FindGeoCacheDetailsAsync(paramModel.Code, _searchOptionViewModel.Latitude, _searchOptionViewModel.Longitude);
 
                 SetDetailViewState(_geoCacheModel.IsFavorite);
+                _geoCacheViewModel = new GeoCacheViewModel(_geoCacheModel);
+                DetailView.DataContext = _geoCacheViewModel;
+
                 ProgressBar.Visibility = Visibility.Collapsed;
             }
-
-            DetailView.DataContext = _geoCacheViewModel;
         }
 
         private void SetDetailViewState(bool isFavoriteState)
@@ -92,18 +94,10 @@ namespace GeoCacheingFinder.Geo
             }
         }
 
-        private async Task<GeoCacheViewModel> FindGeoCacheDetailsAsync(String code, String latitude, String longitude)
+        private async Task<GeoCacheModel> FindGeoCacheDetailsAsync(String code, String latitude, String longitude)
         {
-            
-            this._geoCacheModel = await this._apiRequestService.findCacheByCodeAsync(code, latitude, longitude);
-            if (_geoCacheModel != null)
-            {
-                return new GeoCacheViewModel(_geoCacheModel);
-            }
-            else
-            {
-                return new GeoCacheViewModel();
-            }
+            GeoCacheModel geoCacheModel = await this._apiRequestService.findCacheByCodeAsync(code, latitude, longitude);
+            return geoCacheModel;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -111,7 +105,6 @@ namespace GeoCacheingFinder.Geo
             HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
             base.OnNavigatedFrom(e);
         }
-
 
         private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
         {
@@ -154,17 +147,26 @@ namespace GeoCacheingFinder.Geo
             {
                 // Carry out the operation
                 _cts = new CancellationTokenSource();
-                Geoposition pos = await _geoLocationService.FindGeoLocation((uint)25, _cts);
+                Geoposition pos = await _geoLocationService.FindGeoLocation((uint)_searchOptionViewModel.GPSAccuracy, _cts);
                 _cts = null;
 
                 if (pos != null)
                 {
                     String latitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Latitude);
                     String longitude = String.Format("{0:0.####}", pos.Coordinate.Point.Position.Longitude);
-                    _geoCacheViewModel = await FindGeoCacheDetailsAsync(_geoCacheViewModel.Code, latitude, longitude);
+                    _geoCacheModel = await FindGeoCacheDetailsAsync(_geoCacheViewModel.Code, latitude, longitude);
+                    _cacheStorageService.UpdateGeoCacheInFavoriteAsync(_geoCacheModel);
+                    _geoCacheViewModel = new GeoCacheViewModel(_geoCacheModel);
                     DetailView.DataContext = _geoCacheViewModel;
                 }
+
+                if (_geoCacheModel != null)
+                {
+                    _cacheStorageService.UpdateGeoCacheInFavoriteAsync(_geoCacheModel);
+                }
             }
+
+
             RefreshButton.Visibility = Visibility.Visible;
             CancelButton.Visibility = Visibility.Collapsed;
             ProgressBar.Visibility = Visibility.Collapsed;

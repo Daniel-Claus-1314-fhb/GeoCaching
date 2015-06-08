@@ -87,8 +87,8 @@
     <Compile Include="Geo\FavoriteListPage.xaml.cs">
       <DependentUpon>FavoriteListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Geo\GeoCacheDetailPage.xaml.cs">
-      <DependentUpon>GeoCacheDetailPage.xaml</DependentUpon>
+    <Compile Include="Geo\DetailPage.xaml.cs">
+      <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Geo\SearchListPage.xaml.cs">
       <DependentUpon>SearchListPage.xaml</DependentUpon>
@@ -119,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Geo\GeoCacheDetailPage.xaml">
+    <Page Include="Geo\DetailPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

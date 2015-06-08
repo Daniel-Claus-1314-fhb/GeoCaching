@@ -10,7 +10,7 @@ namespace GeoCacheingFinder.Domain.ViewModel
     {
         public GeoCacheViewModel() 
         {
-            this.Name = "Geo Cache konnte nicht gefunden werden.";
+            this.Name = "GeoCache konnte nicht gefunden werden.";
         }
 
         public GeoCacheViewModel(GeoCacheModel geoCacheModel) 

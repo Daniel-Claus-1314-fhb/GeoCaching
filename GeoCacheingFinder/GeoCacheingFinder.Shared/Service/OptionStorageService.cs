@@ -41,10 +41,10 @@ namespace GeoCacheingFinder.Service
             
         }
 
-        public SearchOptionViewModel loadSearchOptionFromSetting()
+        public SearchOptionViewModel LoadSearchOptionFromSetting()
         {
             SearchOptionViewModel LoadSearchOptionViewModel = new SearchOptionViewModel();
-            if (_container != null)
+            if (_container != null && _container.Values.ContainsKey(SearchOptionKey))
             {
                 String searchOptionJsonString = (String) _container.Values[SearchOptionKey];
                 if (searchOptionJsonString != null && searchOptionJsonString.Length > 0)

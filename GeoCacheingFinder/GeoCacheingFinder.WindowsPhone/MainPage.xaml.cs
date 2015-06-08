@@ -52,7 +52,7 @@ namespace GeoCacheingFinder
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Geo.GeoCacheDetailPage));
+            Frame.Navigate(typeof(Geo.DetailPage));
         }
     }
 }

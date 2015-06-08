@@ -18,6 +18,7 @@
     <Grid Margin="12,0,12,12">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -27,41 +28,82 @@
                    Style="{ThemeResource HeaderTextBlockStyle}"/>
 
         <!-- Grid Row 1 -->
-        <ListBox Grid.Row="1" x:Name="GeoCacheList" ItemsSource="{Binding}" Background="Transparent" Tapped="GeoCacheList_Tapped" >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+        <Grid Grid.Row="1" x:Name="SearchProperties" DataContext="{Binding Path=_searchOptionViewModel}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='keine Name'}" Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"/>
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Latitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Latitude}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+            </StackPanel>
 
-                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Text="Code:" Style="{StaticResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
-                            <TextBlock Text="{Binding Code, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                            <TextBlock Text="Type:" Style="{StaticResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
-                            <TextBlock Text="{Binding Type, FallbackValue='kein'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
-                        </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Text="Longitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Longitude}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Radius:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Radius}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                <TextBlock Text="km" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+            </StackPanel>
+        </Grid>
 
-                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-                            <TextBlock Text="Distanz:" Style="{StaticResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
-                            <TextBlock Text="{Binding Distance, FallbackValue='keine'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
-                            <TextBlock Text="m" Style="{StaticResource ListViewItemContentTextBlockStyle}" Margin="4,0,0,0"/>
-                        </StackPanel>
+        <!-- Grid Row 2 -->
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Path=Location, FallbackValue='keine Location'}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+
+            <TextBlock Grid.Row="0" Text="Suchergebnisse:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,8,0,8" />
+            <ListBox Grid.Row="1" x:Name="GeoCacheList" ItemsSource="{Binding}" Background="Transparent" Tapped="GeoCacheList_Tapped" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MinWidth="150" Width="auto" MaxWidth="200" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='keine Name'}" Style="{ThemeResource ListViewItemContentTextBlockStyle}"/>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="Type:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
+                                <TextBlock Text="{Binding Type, FallbackValue='kein'}" Style="{ThemeResource ListViewItemContentTextBlockStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="Distanz:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
+                                <TextBlock Text="{Binding Distance, FallbackValue='keine'}" Style="{ThemeResource ListViewItemContentTextBlockStyle}"/>
+                                <TextBlock Text="m" Style="{ThemeResource ListViewItemContentTextBlockStyle}" Margin="4,0,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="Latitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
+                                <TextBlock Text="{Binding Latitude, FallbackValue='kein'}" Style="{ThemeResource ListViewItemContentTextBlockStyle}"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="Longitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,4,0" />
+                                <TextBlock Text="{Binding Longitude, FallbackValue='kein'}" Style="{ThemeResource ListViewItemContentTextBlockStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </Page>

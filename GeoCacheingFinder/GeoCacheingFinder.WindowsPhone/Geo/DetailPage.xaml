@@ -1,0 +1,122 @@
+﻿<Page
+    x:Class="GeoCacheingFinder.Geo.DetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GeoCacheingFinder.Geo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Compact">
+            <AppBarButton x:Name="SaveButton" Icon="Favorite" Label="Favorite" Click="SaveButton_Click" IsEnabled="true"/>
+            <AppBarButton x:Name="DeleteButton" Icon="UnFavorite" Label="Entfernen" Click="DeleteButton_Click" IsEnabled="False"/>
+            <AppBarButton x:Name="RefreshButton" Icon="Refresh" Label="Aktualisieren" Click="RefreshButton_Click" Visibility="Visible"/>
+            <AppBarButton x:Name="CancelButton" Icon="Cancel" Label="abbrechen" Click="AbbrechenButton_Click" Visibility="Collapsed"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid x:Name="DetailView" Margin="12,0,12,12" DataContext="{Binding Path=_geoCacheViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Grid Row 0 -->
+        <ProgressBar Grid.Row="0" x:Name="ProgressBar" Height="10" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
+
+        <!-- Grid Row 1 -->
+        <TextBlock Grid.Row="1" Text="{Binding Path=Name}" Style="{ThemeResource SubheaderTextBlockStyle}" TextWrapping="WrapWholeWords"/>
+
+        <!-- Grid Row 2 -->
+        <StackPanel  Grid.Row="2" Height="auto">
+            <TextBlock Text="Kurzbeschreibung:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,8,0,8" />
+            <TextBlock Text="{Binding Path=ShortDescription}" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Grid Row 3 -->
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Daten:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,8,0,8" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="30" Height="*"/>
+                        <RowDefinition MinHeight="30" Height="*"/>
+                        <RowDefinition MinHeight="30" Height="*"/>
+                        <RowDefinition MinHeight="30" Height="*"/>
+                        <RowDefinition MinHeight="30" Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="100" Width="*"/>
+                        <ColumnDefinition MinWidth="100" Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="Code:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Code}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Size:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Size}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="Latitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Latitude}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Longitude:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Longitude}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="Distance:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Distance}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                        <TextBlock Text="m" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Bearing:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Bearing}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="Type:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Type}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Status:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Status}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock Text="Difficulty:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Difficulty}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Terrain:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Terrain}" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+        </StackPanel>
+
+        <!-- Grid Row 4 -->
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Beschreibung:" Style="{ThemeResource ControlContextualInfoTextBlockStyle}" Margin="0,8,0,8" />
+            <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled" >
+                <TextBlock Text="{Binding Description}" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="WrapWholeWords" />
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>
